@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CS2 XP Calculator</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: url('background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .container {
+      height: 100vh;
+      overflow: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .window {
+      width: 80%;
+      max-width: 800px;
+      height: 80%;
+      max-height: 600px;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      background-color: rgba(181, 179, 179, 0.8);
+      overflow-y: auto;
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    .section-divider {
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 20px;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    input[type="radio"] {
+            display: none;
+        }
+
+    .radio-image-label {
+        display: inline-block;
+        cursor: pointer;
+        border: 2px solid transparent;
+        padding: 5px;
+        background-color: gray;
+        border-radius: 5px;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .radio-image-label img {
+            display: block;
+            width: 100px; /* Adjust to your desired size */
+            height: auto;
+        }
+
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .radio-group label img {
+      width: 60px;
+      height: 40px;
+    }
+
+    input[type="radio"]:checked + .radio-image-label {
+            background-color: rgb(0, 157, 255);
+            border-color: black;
+        }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="window">
+        <div class="section">
+            <h2>Your Current Medal</h2>
+            <div class="radio-group">  
+                <input type="radio" id="current-0" name="current" value="0" checked/>
+                <label for="current-0" class="radio-image-label">None</label>
+                <input type="radio" id="current-1" name="current" value="1"/>
+                <label for="current-1" class="radio-image-label">
+                    <img src="https://static.wikia.nocookie.net/cswikia/images/9/9e/Service_medal_2025_lvl1_large.png" alt="Tier 1">
+                </label>
+
+                <input type="radio" id="current-2" name="current" value="2"/>
+                <label for="current-2" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/5/55/Service_medal_2025_lvl2_large.png" alt="Tier 2"></label>
+        
+                <input type="radio" id="current-3" name="current" value="3"/>
+                <label for="current-3" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/4/4e/Service_medal_2025_lvl4_large.png" alt="Tier 3"></label>
+                
+                <input type="radio" id="current-4" name="current" value="4"/>
+                <label for="current-4" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/4/43/Service_medal_2025_lvl3_large.png" alt="Tier 4"></label>
+        
+                <input type="radio" id="current-5" name="current" value="5"/>
+                <label for="current-5" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/b/b4/Service_medal_2025_lvl5_large.png" alt="Tier 5"></label>
+        
+                <input type="radio" id="current-6" name="current" value="6"/>
+                <label for="current-6" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/3/31/Service_medal_2025_lvl6_large.png" alt="Tier 6"></label>
+                
+            </div>
+        </div>
+        <div class="section">
+            <label for="currentLevel">Current Level: </label>
+            <input type="number" id="currentLevel"/>
+        </div>
+        <div class="section">
+            <label for="startDate">Starting Date: </label>
+            <input type="date" id="startDate"/>
+        </div>
+        <div class="section">
+            <label for="alreadyEarnedXP">XP Earned This Week (leave blank if unknown): </label>
+            <input type="number" id="alreadyEarnedXP"/>
+        </div>
+        <div class="section">
+            <label for="averageDMScore">Average Deathmatch Score: </label>
+            <input type="number" id="averageDMScore"/>
+        </div>
+        
+        <div class="section">
+            <h2>Target Medal</h2>
+            <div class="radio-group">
+                <input type="radio" id="target-1" name="target" value="1" checked/>
+                <label for="target-1" class="radio-image-label">
+                    <img src="https://static.wikia.nocookie.net/cswikia/images/9/9e/Service_medal_2025_lvl1_large.png" alt="Tier 1">
+                </label>
+
+                <input type="radio" id="target-2" name="target" value="2"/>
+                <label for="target-2" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/5/55/Service_medal_2025_lvl2_large.png" alt="Tier 2"></label>
+        
+                <input type="radio" id="target-3" name="target" value="3"/>
+                <label for="target-3" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/4/4e/Service_medal_2025_lvl4_large.png" alt="Tier 3"></label>
+                
+                <input type="radio" id="target-4" name="target" value="4"/>
+                <label for="target-4" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/4/43/Service_medal_2025_lvl3_large.png" alt="Tier 4"></label>
+        
+                <input type="radio" id="target-5" name="target" value="5"/>
+                <label for="target-5" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/b/b4/Service_medal_2025_lvl5_large.png" alt="Tier 5"></label>
+        
+                <input type="radio" id="target-6" name="target" value="6"/>
+                <label for="target-6" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/3/31/Service_medal_2025_lvl6_large.png" alt="Tier 6"></label>
+            </div>
+        </div>
+        <input type="button" onclick="calculate()" value="Calculate"/>
+        <div class="section-divider"></div>
+    <h1>Results</h1>
+    <div class="section">
+        <h2>Total XP Needed: </h2>
+        <h3 id="neededXP">neededXP</h3>
+    </div>
+    <div class="section">
+        <h2>Average Daily Playtime (hours): </h2>
+        <h3 id="neededPlaytime">neededPlaytime</h3>
+    </div>
+</div>
+</div>
+<script>
+    // TODO: Add checks to prevent lower tier target medal than current (and other negative number stuff)
+    //       Take into account the XP that's already been earned
+    //       update total neededXP text
+    //       Format average playtime needed in hours and minutes
+    //       Cap current level at 40
+    //       Style a little better, put text fields on the left and medals on the right so everything fits in one scroll
+    
+    function calculate(e) {
+        var baseXP = document.querySelector('#averageDMScore').value*6/5;
+        var currentLevel = document.querySelector('#currentLevel').value;
+        var currentMedal = document.querySelector('input[name="current"]:checked').value;
+        var targetMedal = document.querySelector('input[name="target"]:checked').value;
+        console.log(currentMedal);
+        console.log(targetMedal);
+        console.log(document.querySelector('#startDate'));
+        var sd = new Date(document.querySelector('#startDate').value);
+        var startDate = Date.UTC(sd.getFullYear(), sd.getMonth(), sd.getDay());
+        var endDate = Date.UTC(sd.getFullYear()+1, 0, 1);
+        var daysLeft = Math.floor((endDate-startDate)/(1000*60*60*24));
+        var weeksLeft = Math.floor(daysLeft/7)
+
+        var neededXP = 195000*(targetMedal-currentMedal)-5000*currentLevel;
+        var weeklyXP = neededXP/weeksLeft;
+        var weeklyHours = hoursForXP(weeklyXP, baseXP);
+        var dailyHours = weeklyHours/7;
+        document.querySelector('#neededPlaytime').innerText = dailyHours;
+    }
+
+    // Returns the number of weekly hours of playtime
+    function hoursForXP(neededWeeklyXP, baseXP) {
+        var y = neededWeeklyXP;
+        var h1 = 4500/(baseXP*4);
+        var h2 = h1 + 3000/(baseXP*2);
+        var h3 = h2 + 3667/baseXP;
+        if (0 < y && y < 4 * baseXP * h1) {
+            return y / (4 * baseXP);
+        } else if (4 * baseXP * h1 < y && y < 2 * baseXP * h2 + 2250) {
+            return (y - 2250) / (2 * baseXP);
+        } else if (2 * baseXP * h2 + 2250 < y && y < baseXP * h3 + 4875) {
+            return (y - 4875) / baseXP;
+        } else if (y > baseXP * h3 + 4875) {
+            return (y - 10066) / (0.175 * baseXP);
+        } else {
+            return NaN; // Handle undefined cases
+        }
+    }
+
+    document.addEventListener('change', console.log);
+
+</script>
+
+</body>
+</html>
