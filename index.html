@@ -24,10 +24,9 @@
     }
 
     .window {
-      width: 80%;
-      max-width: 800px;
-      height: 80%;
-      max-height: 600px;
+      width: 65%;
+      height: 85%;
+      
       background-color: white;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       padding: 20px;
@@ -43,6 +42,10 @@
     .section-divider {
       border-bottom: 1px solid #ccc;
       margin-bottom: 20px;
+    }
+
+    .hidden {
+        display: none;
     }
 
     .radio-group {
@@ -92,11 +95,23 @@
             border-color: black;
         }
 
+    .output-row {
+        display: flex;
+        align-items: center; /* Align items vertically in the center */
+        gap: 10px; /* Space between label and value */
+    }
+
+    .output-still {
+        
+    }
+
   </style>
 </head>
 <body>
   <div class="container">
     <div class="window">
+        <h1>CS2 Service Medal Calculator</h1>
+        
         <div class="section">
             <h2>Your Current Medal</h2>
             <div class="radio-group">  
@@ -125,20 +140,18 @@
             </div>
         </div>
         <div class="section">
-            <label for="currentLevel">Current Level: </label>
-            <input type="number" id="currentLevel"/>
+            <label for="currentLevel">Starting Level</label>
+            <input type="number" min="1" max="40" value="1" id="currentLevel"/>
+            <label for="currentXP"> and XP </label>
+            <input type="number" min="0" max="4999" value="0" id="currentXP"/>
         </div>
         <div class="section">
             <label for="startDate">Starting Date: </label>
-            <input type="date" id="startDate"/>
-        </div>
-        <div class="section">
-            <label for="alreadyEarnedXP">XP Earned This Week (leave blank if unknown): </label>
-            <input type="number" id="alreadyEarnedXP"/>
+            <input type="date" id="startDate" value=""/>
         </div>
         <div class="section">
             <label for="averageDMScore">Average Deathmatch Score: </label>
-            <input type="number" id="averageDMScore"/>
+            <input type="number" id="averageDMScore" value="640"/>
         </div>
         
         <div class="section">
@@ -169,16 +182,39 @@
         <div class="section-divider"></div>
     <h1>Results</h1>
     <div class="section">
-        <h2>Total XP Needed: </h2>
-        <h3 id="neededXP">neededXP</h3>
+        <div class="output-row">
+            <h2>Total XP Needed: </h2>
+            <p id="neededXP">neededXP</p>
+        </div>
+        
+        <div class="output-row">
+            <h3>Weekly: </h3>
+            <p id="neededWeeklyXP">neededWeeklyXP</p>
+        </div>
+        <div class="output-row">
+            <h3>Daily: </h3>
+            <p id="neededDailyXP">neededDailyXP</p>
+        </div>
     </div>
     <div class="section">
-        <h2>Average Daily Playtime (hours): </h2>
-        <h3 id="neededPlaytime">neededPlaytime</h3>
+        <h2>Average Playtime: </h2>
+        <div class="output-row">
+            <h3>Weekly: </h3>
+            <p id="neededPlaytimeWeekly">neededPlaytimeWeekly</p>
+        </div>
+        <div class="output-row">
+            <h3>Daily: </h3>
+            <p id="neededPlaytime">neededPlaytime</p>
+        </div>
+        <div class="output-row">
+            <h3 id="lastDaysText" class="hidden">Daily (For the Last x Days)</h3>
+            <p id="neededPlaytimeLastDays" class="hidden">neededPlaytimeLastDays</p>
+        </div>
     </div>
 </div>
 </div>
 <script>
+    document.querySelector('#startDate').valueAsDate = new Date();
     // TODO: Add checks to prevent lower tier target medal than current (and other negative number stuff)
     //       Take into account the XP that's already been earned
     //       update total neededXP text
@@ -189,35 +225,69 @@
     function calculate(e) {
         var baseXP = document.querySelector('#averageDMScore').value*6/5;
         var currentLevel = document.querySelector('#currentLevel').value;
+        var currentXP = document.querySelector('#currentXP').value;
         var currentMedal = document.querySelector('input[name="current"]:checked').value;
         var targetMedal = document.querySelector('input[name="target"]:checked').value;
         console.log(currentMedal);
         console.log(targetMedal);
         console.log(document.querySelector('#startDate'));
         var sd = new Date(document.querySelector('#startDate').value);
-        var startDate = Date.UTC(sd.getFullYear(), sd.getMonth(), sd.getDay());
         var endDate = Date.UTC(sd.getFullYear()+1, 0, 1);
-        var daysLeft = Math.floor((endDate-startDate)/(1000*60*60*24));
-        var weeksLeft = Math.floor(daysLeft/7)
+        var daysLeft = Math.floor((endDate-sd.getTime())/(1000*60*60*24));
 
-        var neededXP = 195000*(targetMedal-currentMedal)-5000*currentLevel;
-        var weeklyXP = neededXP/weeksLeft;
-        var weeklyHours = hoursForXP(weeklyXP, baseXP);
-        var dailyHours = weeklyHours/7;
-        document.querySelector('#neededPlaytime').innerText = dailyHours;
+        var weeksLeft = Math.ceil(daysLeft/7);
+        var lonelyDays = daysLeft%7;
+        var neededXP = 195000*(targetMedal-currentMedal)-5000*currentLevel+5000-currentXP;
+
+        var weeklyHours = hoursForXP(neededXP/weeksLeft, baseXP);
+        document.querySelector('#neededXP').innerText = neededXP;
+        document.querySelector('#neededWeeklyXP').innerText = Math.ceil(neededXP/(weeksLeft-1));
+        document.querySelector('#neededDailyXP').innerText = Math.ceil(neededXP/daysLeft);
+        if(lonelyDays!=0) {
+            var dailyHours1 = weeklyHours/7;
+            var dailyHours2 = weeklyHours/lonelyDays;
+            document.querySelector('#neededPlaytimeLastDays').className = '';
+            document.querySelector('#lastDaysText').className = '';
+            document.querySelector('#neededPlaytimeLastDays').innerText = formatPlaytime(dailyHours2);
+            document.querySelector('#lastDaysText').innerText = `Daily (For the Last ${lonelyDays} Days)`;
+        }
+        else{
+            var dailyHours1 = weeklyHours/7;
+            document.querySelector('#neededPlaytimeLastDays').className = 'hidden';
+            document.querySelector('#lastDaysText').className = 'hidden';
+        }
+        document.querySelector('#neededPlaytime').innerText = formatPlaytime(dailyHours1);
+        document.querySelector('#neededPlaytimeWeekly').innerText = formatPlaytime(weeklyHours);
     }
 
-    // Returns the number of weekly hours of playtime
+    function xpFromPlaytime(playtimeHours, baseXP) {
+        const h1 = 4500 / (baseXP * 4);
+        const h2 = h1 + 3000 / (baseXP * 2);
+        const h3 = h2 + 3667 / baseXP;
+
+        if (playtimeHours > 0 && playtimeHours <= h1) {
+            return baseXP * 4 * playtimeHours;
+        } else if (playtimeHours > h1 && playtimeHours <= h2) {
+            return baseXP * 2 * playtimeHours + 2250;
+        } else if (playtimeHours > h2 && playtimeHours <= h3) {
+            return baseXP * playtimeHours + 4875;
+        } else if (playtimeHours > h3) {
+            return baseXP * 0.175 * playtimeHours + 10066;
+        } else {
+            return 0; // Handle undefined or negative input
+        }
+    }
+
     function hoursForXP(neededWeeklyXP, baseXP) {
         var y = neededWeeklyXP;
         var h1 = 4500/(baseXP*4);
         var h2 = h1 + 3000/(baseXP*2);
         var h3 = h2 + 3667/baseXP;
-        if (0 < y && y < 4 * baseXP * h1) {
+        if (0 < y && y <= 4 * baseXP * h1) {
             return y / (4 * baseXP);
-        } else if (4 * baseXP * h1 < y && y < 2 * baseXP * h2 + 2250) {
+        } else if (4 * baseXP * h1 < y && y <= 2 * baseXP * h2 + 2250) {
             return (y - 2250) / (2 * baseXP);
-        } else if (2 * baseXP * h2 + 2250 < y && y < baseXP * h3 + 4875) {
+        } else if (2 * baseXP * h2 + 2250 < y && y <= baseXP * h3 + 4875) {
             return (y - 4875) / baseXP;
         } else if (y > baseXP * h3 + 4875) {
             return (y - 10066) / (0.175 * baseXP);
@@ -225,6 +295,49 @@
             return NaN; // Handle undefined cases
         }
     }
+
+    function formatPlaytime(hours) {
+        var h = Math.floor(hours);
+        var m = Math.round(60*(hours - h));
+        return `${h} hours ${m} minutes`
+    }
+
+    // Returns the formatted string for needed playtime
+    // function calculatePlaytime(neededXP, weeks) {
+    //     var dailyHours = neededXP;
+    // }
+
+    // function hoursForXP(totalXP, baseXP, totalDays) {
+    //     const weeklyCap1 = 4500;
+    //     const weeklyCap2 = 7500;
+    //     const weeklyCap3 = 11167;
+    //     const weeklyResetDays = 7;
+
+    //     let remainingXP = totalXP;
+    //     let totalHours = 0;
+
+    //     // Handle each week separately
+    //     while (remainingXP > 0) {
+    //         let weekXP = Math.min(remainingXP, weeklyCap3); // Maximum XP in a week
+    //         let weekHours = 0;
+
+    //         if (weekXP <= weeklyCap1) {
+    //             weekHours = weekXP / (4 * baseXP);
+    //         } else if (weekXP <= weeklyCap2) {
+    //             weekHours = (weeklyCap1 / (4 * baseXP)) + ((weekXP - weeklyCap1) / (2 * baseXP));
+    //         } else {
+    //             weekHours = (weeklyCap1 / (4 * baseXP)) +
+    //                         ((weeklyCap2 - weeklyCap1) / (2 * baseXP)) +
+    //                         ((weekXP - weeklyCap2) / baseXP);
+    //         }
+
+    //         totalHours += weekHours;
+    //         remainingXP -= weekXP;
+    //     }
+    //     return totalHours / totalDays;
+    // }
+    // Returns the number of weekly hours of playtime
+    
 
     document.addEventListener('change', console.log);
 
