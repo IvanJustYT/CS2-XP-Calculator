@@ -1,347 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <link rel="icon" type="image/x-icon" href="/icons/favicon.ico">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet">
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CS2 XP Calculator</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      overflow: hidden;
-      background: url('background.jpg') no-repeat center center fixed;
-      background-size: cover;
-      font-family: 'Arial', sans-serif;
-    }
-
-    .container {
-      height: 100vh;
-      overflow: auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .window {
-      width: 65%;
-      height: 85%;
-      
-      background-color: white;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      border-radius: 10px;
-      background-color: rgba(181, 179, 179, 0.8);
-      overflow-y: auto;
-    }
-
-    .section {
-      margin-bottom: 20px;
-    }
-
-    .section-divider {
-      border-bottom: 1px solid #ccc;
-      margin-bottom: 20px;
-    }
-
-    .hidden {
-        display: none;
-    }
-
-    .radio-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    input[type="radio"] {
-            display: none;
-        }
-
-    .radio-image-label {
-        display: inline-block;
-        cursor: pointer;
-        border: 2px solid transparent;
-        padding: 5px;
-        background-color: gray;
-        border-radius: 5px;
-        transition: background-color 0.3s, border-color 0.3s;
-    }
-
-    .radio-image-label img {
-            display: block;
-            width: 100px; /* Adjust to your desired size */
-            height: auto;
-        }
-
-    .radio-group label {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .radio-group label img {
-      width: 60px;
-      height: 40px;
-    }
-
-    input[type="radio"]:checked + .radio-image-label {
-            background-color: rgb(0, 157, 255);
-            border-color: black;
-        }
-
-    .output-row {
-        display: flex;
-        align-items: center; /* Align items vertically in the center */
-        gap: 10px; /* Space between label and value */
-    }
-
-    .output-still {
-        
-    }
-
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title data-i18n="title">CS2 XP Calculator</title>
 </head>
+
 <body>
-  <div class="container">
-    <div class="window">
-        <h1>CS2 Service Medal Calculator</h1>
-        
-        <div class="section">
-            <h2>Your Current Medal</h2>
-            <div class="radio-group">  
-                <input type="radio" id="current-0" name="current" value="0" checked/>
-                <label for="current-0" class="radio-image-label">None</label>
-                <input type="radio" id="current-1" name="current" value="1"/>
-                <label for="current-1" class="radio-image-label">
-                    <img src="https://static.wikia.nocookie.net/cswikia/images/9/9e/Service_medal_2025_lvl1_large.png" alt="Tier 1">
-                </label>
-
-                <input type="radio" id="current-2" name="current" value="2"/>
-                <label for="current-2" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/5/55/Service_medal_2025_lvl2_large.png" alt="Tier 2"></label>
-        
-                <input type="radio" id="current-3" name="current" value="3"/>
-                <label for="current-3" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/4/4e/Service_medal_2025_lvl4_large.png" alt="Tier 3"></label>
-                
-                <input type="radio" id="current-4" name="current" value="4"/>
-                <label for="current-4" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/4/43/Service_medal_2025_lvl3_large.png" alt="Tier 4"></label>
-        
-                <input type="radio" id="current-5" name="current" value="5"/>
-                <label for="current-5" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/b/b4/Service_medal_2025_lvl5_large.png" alt="Tier 5"></label>
-        
-                <input type="radio" id="current-6" name="current" value="6"/>
-                <label for="current-6" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/3/31/Service_medal_2025_lvl6_large.png" alt="Tier 6"></label>
-                
+  <div class="overlay visible">
+    <div class="window fade-in">
+      <div id="calculatorPage" class="calculator page active">
+        <div class="topless">
+          <a href="https://discord.gg/TWkrtHuc8w">
+            <div id="discordButtonDiv">
+              <img id="discordButton" src="icons/discordlogo.jpeg" alt="Join My Discord">
             </div>
+          </a>
+          <h1 data-i18n="title">CS2 XP Calculator</h1>
+          <div id="language-switcher">
+            <span class="flag-icon flag-icon-gb" id="en" onclick="switchLanguage('en')"></span>
+            <span class="flag-icon flag-icon-ru" id="ru" onclick="switchLanguage('ru')"></span>
+          </div>
         </div>
-        <div class="section">
-            <label for="currentLevel">Starting Level</label>
-            <input type="number" min="1" max="40" value="1" id="currentLevel"/>
-            <label for="currentXP"> and XP </label>
-            <input type="number" min="0" max="4999" value="0" id="currentXP"/>
-        </div>
-        <div class="section">
-            <label for="startDate">Starting Date: </label>
-            <input type="date" id="startDate" value=""/>
-        </div>
-        <div class="section">
-            <label for="averageDMScore">Average Deathmatch Score: </label>
-            <input type="number" id="averageDMScore" value="640"/>
-        </div>
-        
-        <div class="section">
-            <h2>Target Medal</h2>
-            <div class="radio-group">
-                <input type="radio" id="target-1" name="target" value="1" checked/>
-                <label for="target-1" class="radio-image-label">
-                    <img src="https://static.wikia.nocookie.net/cswikia/images/9/9e/Service_medal_2025_lvl1_large.png" alt="Tier 1">
-                </label>
 
-                <input type="radio" id="target-2" name="target" value="2"/>
-                <label for="target-2" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/5/55/Service_medal_2025_lvl2_large.png" alt="Tier 2"></label>
-        
-                <input type="radio" id="target-3" name="target" value="3"/>
-                <label for="target-3" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/4/4e/Service_medal_2025_lvl4_large.png" alt="Tier 3"></label>
-                
-                <input type="radio" id="target-4" name="target" value="4"/>
-                <label for="target-4" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/4/43/Service_medal_2025_lvl3_large.png" alt="Tier 4"></label>
-        
-                <input type="radio" id="target-5" name="target" value="5"/>
-                <label for="target-5" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/b/b4/Service_medal_2025_lvl5_large.png" alt="Tier 5"></label>
-        
-                <input type="radio" id="target-6" name="target" value="6"/>
-                <label for="target-6" class="radio-image-label"><img src="https://static.wikia.nocookie.net/cswikia/images/3/31/Service_medal_2025_lvl6_large.png" alt="Tier 6"></label>
+        <div class="medal-area">
+          <!-- Current Medal -->
+          <p data-i18n="currentMedal" class="current-medal-text">Current Medal</p>
+          <div class="radio-group">
+            <input type="radio" id="current-0" name="current" value="0" checked />
+            <label for="current-0" class="medal-button medal-0" name="current" data-i18n="noneMedal">None</label>
+            <input type="radio" id="current-1" name="current" value="1" class="medal-1" />
+            <label for="current-1" class="medal-button medal-1" name="current">
+              <img src="https://static.wikia.nocookie.net/cswikia/images/9/9e/Service_medal_2025_lvl1_large.png"
+                alt="Tier 1">
+            </label>
+            <input type="radio" id="current-2" name="current" value="2" />
+            <label for="current-2" class="medal-button medal-2" name="current"><img
+                src="https://static.wikia.nocookie.net/cswikia/images/5/55/Service_medal_2025_lvl2_large.png"
+                alt="Tier 2"></label>
+
+            <input type="radio" id="current-3" name="current" value="3" />
+            <label for="current-3" class="medal-button medal-3" name="current"><img
+                src="https://static.wikia.nocookie.net/cswikia/images/4/4e/Service_medal_2025_lvl4_large.png"
+                alt="Tier 3"></label>
+
+            <input type="radio" id="current-4" name="current" value="4" />
+            <label for="current-4" class="medal-button medal-4" name="current"><img
+                src="https://static.wikia.nocookie.net/cswikia/images/4/43/Service_medal_2025_lvl3_large.png"
+                alt="Tier 4"></label>
+
+            <input type="radio" id="current-5" name="current" value="5" />
+            <label for="current-5" class="medal-button medal-5" name="current"><img
+                src="https://static.wikia.nocookie.net/cswikia/images/b/b4/Service_medal_2025_lvl5_large.png"
+                alt="Tier 5"></label>
+          </div>
+
+          <!-- Target Medal -->
+          <p data-i18n="targetMedal" class="target-medal-text">Target Medal</p>
+          <div class="radio-group">
+            <input type="radio" id="target-1" name="target" value="1" checked />
+            <label for="target-1" class="medal-button medal-1" name="target">
+              <img src="https://static.wikia.nocookie.net/cswikia/images/9/9e/Service_medal_2025_lvl1_large.png"
+                alt="Tier 1">
+            </label>
+            <input type="radio" id="target-2" name="target" value="2" />
+            <label for="target-2" class="medal-button medal-2" name="target"><img
+                src="https://static.wikia.nocookie.net/cswikia/images/5/55/Service_medal_2025_lvl2_large.png"
+                alt="Tier 2"></label>
+
+            <input type="radio" id="target-3" name="target" value="3" />
+            <label for="target-3" class="medal-button medal-3" name="target"><img
+                src="https://static.wikia.nocookie.net/cswikia/images/4/4e/Service_medal_2025_lvl4_large.png"
+                alt="Tier 3"></label>
+
+            <input type="radio" id="target-4" name="target" value="4" />
+            <label for="target-4" class="medal-button medal-4" name="target"><img
+                src="https://static.wikia.nocookie.net/cswikia/images/4/43/Service_medal_2025_lvl3_large.png"
+                alt="Tier 4"></label>
+
+            <input type="radio" id="target-5" name="target" value="5" />
+            <label for="target-5" class="medal-button medal-5" name="target"><img
+                src="https://static.wikia.nocookie.net/cswikia/images/b/b4/Service_medal_2025_lvl5_large.png"
+                alt="Tier 5"></label>
+
+            <input type="radio" id="target-6" name="target" value="6" />
+            <label for="target-6" class="medal-button medal-6" name="target"><img
+                src="https://static.wikia.nocookie.net/cswikia/images/3/31/Service_medal_2025_lvl6_large.png"
+                alt="Tier 6"></label>
+          </div>
+        </div>
+        <div class="input-area">
+
+          <!-- Starting Level and XP -->
+          <div class="section">
+            <div class="single-input">
+              <label data-i18n="startingLevel" for="currentLevel">Starting Level</label>
+              <input type="number" inputmode="numeric" id="currentLevel" min="1" max="39" value="1">
+              <label class="error" id="currentLevelERROR" for="currentLevel"></label>
             </div>
+
+            <div class="single-input">
+              <label data-i18n="currentXP" for="currentXP">Current XP</label>
+              <input type="number" inputmode="numeric" id="currentXP" min="0" max="4999" value="0">
+              <label class="error" id="currentXPERROR" for="currentXP"></label>
+            </div>
+          </div>
+
+          <!-- Start Date and DM Score -->
+          <div class="section">
+            <div class="single-input">
+              <label data-i18n="startDate" for="startDate">Start Date</label>
+              <input type="date" id="startDate" style="margin-bottom: 15px">
+            </div>
+
+            <div class="single-input">
+              <label data-i18n="averageDMScore" for="averageDMScore">Average Deathmatch Score</label>
+              <input type="number" inputmode="numeric" id="averageDMScore" min="1" value="600">
+              <label class="error" id="averageDMScoreERROR" for="averageDMScore"></label>
+              <label class="checkbox-box">
+                <input id="useDeathmatch" type="checkbox" checked>
+                <span class="checkmark"></span>
+                <span class="checkbox-label" data-i18n="useDeathmatch">Use Deathmatch Score</span>
+              </label>
+            </div>
+          </div>
         </div>
-        <input type="button" onclick="calculate()" value="Calculate"/>
-        <div class="section-divider"></div>
-    <h1>Results</h1>
-    <div class="section">
-        <div class="output-row">
-            <h2>Total XP Needed: </h2>
-            <p id="neededXP">neededXP</p>
+        <div class="calculate">
+          <button data-i18n="calculateButton" class="calculate-button big-button"
+            onclick="calculate(); scrollToBottom()">CALCULATE</button>
+          <button data-i18n="resetButton" class="reset-button big-button" onclick="resetValues()">RESET</button>
         </div>
-        
-        <div class="output-row">
-            <h3>Weekly: </h3>
-            <p id="neededWeeklyXP">neededWeeklyXP</p>
+
+        <!-- Results Area -->
+        <div id="resultArea" class="result-area hidden fade-in">
+          <!--<h2>Results</h2>-->
+          <div class="output-row">
+            <span data-i18n="totalXPNeeded">Total XP Needed:</span>
+            <span><span id="neededXP"></span> XP</span>
+          </div>
+          <!-- <div class="output-row" id="weekXProw">
+          <span>Weekly XP:</span>
+          <span><span id="neededWeeklyXP"></span> XP</span>
+        </div> -->
+          <div class="output-row">
+            <span data-i18n="dailyXP">Daily XP:</span>
+            <span><span id="neededDailyXP"></span> XP</span>
+          </div>
+          <div class="output-row">
+            <div class="tooltip"><span data-i18n="dailyPlaytime" id="tooltip-hoverable">Daily Playtime: </span>
+              <span data-i18n="tooltip" class="tooltiptext">In-game time (see FAQ)</span>
+            </div>
+            <span id="neededPlaytime" data-i18n="playtime"></span>
+          </div>
         </div>
-        <div class="output-row">
-            <h3>Daily: </h3>
-            <p id="neededDailyXP">neededDailyXP</p>
+      </div>
+      <div id="helpPage" class="help page">
+
+        <div class="topless">
+          <a href="https://discord.gg/TWkrtHuc8w">
+            <div id="discordButtonDiv">
+              <img id="discordButton" src="icons/discordlogo.jpeg" alt="Join My Discord">
+            </div>
+          </a>
+          <h1 data-i18n="howToUse">How to use</h1>
+          <div id="language-switcher">
+            <span class="flag-icon flag-icon-gb" id="en" onclick="switchLanguage('en')"></span>
+            <span class="flag-icon flag-icon-ru" id="ru" onclick="switchLanguage('ru')"></span>
+          </div>
         </div>
+        <p class="help-text" style="margin-bottom: 7px;" data-i18n="help1">The CS2 Service Medal Calculator allows you
+          to know how much XP
+          you need to earn in order to get your desired Service Medal.
+          It also shows you how much time you need to play to earn that XP, based on:
+        </p>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 8px 0 10px">
+          <ul class="help-text">
+            <li data-i18n="bullet1">Your Current Level</li>
+            <li data-i18n="bullet2">Your Average Deathmatch Score</li>
+            <li data-i18n="bullet3">The Days Left in the Year</li>
+          </ul>
+          <img src="images/introimg1.png" alt="Cool image showing the visuals of the calculator">
+        </div>
+        <p class="help-text" data-i18n="help2">This tool is fairly easy to use, you only need to input a few things.
+          The first two values to select are the Service Medal
+          that you're aiming for, and the Medal you currently own, if any (check your Steam inventory to know that)
+        </p>
+        <div
+          style="display: flex; flex-grow: 1; flex-direction: column; align-items: center; justify-content: space-between; margin: 8px 0 10px">
+          <img src="images/medalselect.png" alt="Visuals of Service Medal Selection">
+          <img src="images/medalselect2.png" alt="See if you have a Service Medal in your inventory">
+        </div>
+        <p class="help-text" data-i18n="help3">Then, simply input your CS2 Level and your XP, you can find them by
+          clicking
+          your profile while in the main menu (see picture below)</p>
+        <img src="images/currentlevel.png" alt="Click on your player in the CS2 home screen" style="max-width: 500px;">
+        <p class="help-text" data-i18n="help4">Finally, select the day you're going to start playing, and the average
+          score
+          you get in a Deathmatch
+        </p>
+        <p class="help-text" data-i18n="help5">The result is calculated assuming you play every day until the end of the
+          year,
+          especially during days where the bonus XP is reset, maximizing your time's worth.
+        </p>
+        <hr style="color:white; width: 100%">
+        <h1 data-i18n="faqTitle">Frequently Asked Questions</h1>
+        <p class="question" data-i18n="faq1Question">Q: Why Deathmatch?</p>
+        <p class="answer" data-i18n="faq1Answer">A: Deatmatch is the most consistent gamemode in CS2, as it has a fixed
+          duration, and you can
+          easily figure out your average score per match. Also, it's the most efficient gamemode for XP
+          (according to me in <a href="https://youtu.be/FkpoZfvaaok">this video</a> at least, please let me know if I'm
+          wrong).<br>
+          The only downside of Deathmatch is that it can be pretty boring and not ideal for sessions longer than 1-2
+          hours at a time.
+        </p>
+
+        <p class="question" data-i18n="faq2Question">Q: How accurate is the result?</p>
+        <p class="answer" data-i18n="faq2Answer">A: The hours of daily playtime are calculated keeping in mind that XP
+          is gained at an
+          increasingly slower rate as you accumulate XP through the week, with the penalty being reset every
+          Wednesday. Note that the result DOES NOT INCLUDE loading times, warmup or map voting. Therefore,
+          a fully completed Deathmatch game will count as 10 minutes of playtime.
+
+        <p class="question" data-i18n="faq3Question">Q: Why are you the greatest CS YouTuber there is?</p>
+        <p class="answer" data-i18n="faq3Answer">A: bEcAUsE my cOntEnt Is dIffErEnt And I cAn Add vALUE tO thE
+          cOmmUnIty.
+          &#129299 &#129312 (I totally didn't write this to myself)
+        </p>
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <button id="scrollTopButton" class="scroll-to-top" onclick="scrollToTop()">
+          <i class="fas fa-arrow-up"></i>
+        </button>
+
+        <!-- <button id="scrollTopButton" class="scroll-to-top" onclick="scrollToTop()"><strong>&#8593;</strong></button> -->
+      </div>
     </div>
-    <div class="section">
-        <h2>Average Playtime: </h2>
-        <div class="output-row">
-            <h3>Weekly: </h3>
-            <p id="neededPlaytimeWeekly">neededPlaytimeWeekly</p>
-        </div>
-        <div class="output-row">
-            <h3>Daily: </h3>
-            <p id="neededPlaytime">neededPlaytime</p>
-        </div>
-        <div class="output-row">
-            <h3 id="lastDaysText" class="hidden">Daily (For the Last x Days)</h3>
-            <p id="neededPlaytimeLastDays" class="hidden">neededPlaytimeLastDays</p>
-        </div>
-    </div>
-</div>
-</div>
-<script>
-    document.querySelector('#startDate').valueAsDate = new Date();
-    // TODO: Add checks to prevent lower tier target medal than current (and other negative number stuff)
-    //       Take into account the XP that's already been earned
-    //       update total neededXP text
-    //       Format average playtime needed in hours and minutes
-    //       Cap current level at 40
-    //       Style a little better, put text fields on the left and medals on the right so everything fits in one scroll
-    
-    function calculate(e) {
-        var baseXP = document.querySelector('#averageDMScore').value*6/5;
-        var currentLevel = document.querySelector('#currentLevel').value;
-        var currentXP = document.querySelector('#currentXP').value;
-        var currentMedal = document.querySelector('input[name="current"]:checked').value;
-        var targetMedal = document.querySelector('input[name="target"]:checked').value;
-        console.log(currentMedal);
-        console.log(targetMedal);
-        console.log(document.querySelector('#startDate'));
-        var sd = new Date(document.querySelector('#startDate').value);
-        var endDate = Date.UTC(sd.getFullYear()+1, 0, 1);
-        var daysLeft = Math.floor((endDate-sd.getTime())/(1000*60*60*24));
 
-        var weeksLeft = Math.ceil(daysLeft/7);
-        var lonelyDays = daysLeft%7;
-        var neededXP = 195000*(targetMedal-currentMedal)-5000*currentLevel+5000-currentXP;
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
+      data-id="ivanjust" data-description="Support me on Buy me a coffee!" data-message=":D" data-color="#FFEA28"
+      data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+  </div>
+  <div id="help-widget" class="help-widget" onclick="showHelp()"><span class="help-question-mark">?</span></div>
 
-        var weeklyHours = hoursForXP(neededXP/weeksLeft, baseXP);
-        document.querySelector('#neededXP').innerText = neededXP;
-        document.querySelector('#neededWeeklyXP').innerText = Math.ceil(neededXP/(weeksLeft-1));
-        document.querySelector('#neededDailyXP').innerText = Math.ceil(neededXP/daysLeft);
-        if(lonelyDays!=0) {
-            var dailyHours1 = weeklyHours/7;
-            var dailyHours2 = weeklyHours/lonelyDays;
-            document.querySelector('#neededPlaytimeLastDays').className = '';
-            document.querySelector('#lastDaysText').className = '';
-            document.querySelector('#neededPlaytimeLastDays').innerText = formatPlaytime(dailyHours2);
-            document.querySelector('#lastDaysText').innerText = `Daily (For the Last ${lonelyDays} Days)`;
-        }
-        else{
-            var dailyHours1 = weeklyHours/7;
-            document.querySelector('#neededPlaytimeLastDays').className = 'hidden';
-            document.querySelector('#lastDaysText').className = 'hidden';
-        }
-        document.querySelector('#neededPlaytime').innerText = formatPlaytime(dailyHours1);
-        document.querySelector('#neededPlaytimeWeekly').innerText = formatPlaytime(weeklyHours);
-    }
-
-    function xpFromPlaytime(playtimeHours, baseXP) {
-        const h1 = 4500 / (baseXP * 4);
-        const h2 = h1 + 3000 / (baseXP * 2);
-        const h3 = h2 + 3667 / baseXP;
-
-        if (playtimeHours > 0 && playtimeHours <= h1) {
-            return baseXP * 4 * playtimeHours;
-        } else if (playtimeHours > h1 && playtimeHours <= h2) {
-            return baseXP * 2 * playtimeHours + 2250;
-        } else if (playtimeHours > h2 && playtimeHours <= h3) {
-            return baseXP * playtimeHours + 4875;
-        } else if (playtimeHours > h3) {
-            return baseXP * 0.175 * playtimeHours + 10066;
-        } else {
-            return 0; // Handle undefined or negative input
-        }
-    }
-
-    function hoursForXP(neededWeeklyXP, baseXP) {
-        var y = neededWeeklyXP;
-        var h1 = 4500/(baseXP*4);
-        var h2 = h1 + 3000/(baseXP*2);
-        var h3 = h2 + 3667/baseXP;
-        if (0 < y && y <= 4 * baseXP * h1) {
-            return y / (4 * baseXP);
-        } else if (4 * baseXP * h1 < y && y <= 2 * baseXP * h2 + 2250) {
-            return (y - 2250) / (2 * baseXP);
-        } else if (2 * baseXP * h2 + 2250 < y && y <= baseXP * h3 + 4875) {
-            return (y - 4875) / baseXP;
-        } else if (y > baseXP * h3 + 4875) {
-            return (y - 10066) / (0.175 * baseXP);
-        } else {
-            return NaN; // Handle undefined cases
-        }
-    }
-
-    function formatPlaytime(hours) {
-        var h = Math.floor(hours);
-        var m = Math.round(60*(hours - h));
-        return `${h} hours ${m} minutes`
-    }
-
-    // Returns the formatted string for needed playtime
-    // function calculatePlaytime(neededXP, weeks) {
-    //     var dailyHours = neededXP;
-    // }
-
-    // function hoursForXP(totalXP, baseXP, totalDays) {
-    //     const weeklyCap1 = 4500;
-    //     const weeklyCap2 = 7500;
-    //     const weeklyCap3 = 11167;
-    //     const weeklyResetDays = 7;
-
-    //     let remainingXP = totalXP;
-    //     let totalHours = 0;
-
-    //     // Handle each week separately
-    //     while (remainingXP > 0) {
-    //         let weekXP = Math.min(remainingXP, weeklyCap3); // Maximum XP in a week
-    //         let weekHours = 0;
-
-    //         if (weekXP <= weeklyCap1) {
-    //             weekHours = weekXP / (4 * baseXP);
-    //         } else if (weekXP <= weeklyCap2) {
-    //             weekHours = (weeklyCap1 / (4 * baseXP)) + ((weekXP - weeklyCap1) / (2 * baseXP));
-    //         } else {
-    //             weekHours = (weeklyCap1 / (4 * baseXP)) +
-    //                         ((weeklyCap2 - weeklyCap1) / (2 * baseXP)) +
-    //                         ((weekXP - weeklyCap2) / baseXP);
-    //         }
-
-    //         totalHours += weekHours;
-    //         remainingXP -= weekXP;
-    //     }
-    //     return totalHours / totalDays;
-    // }
-    // Returns the number of weekly hours of playtime
-    
-
-    document.addEventListener('change', console.log);
-
-</script>
+  <script type="text/javascript" src="main.js"></script>
+  <script type="text/javascript" src="translations.js"></script>
 
 </body>
+
 </html>
