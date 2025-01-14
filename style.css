@@ -429,10 +429,6 @@ input[type="radio"]:checked+.medal-6 {
   /* Light glow on mouse press */
 }
 
-.disabled {
-  display: none !important;
-}
-
 .calculate-button:active {
   background-color: rgb(255, 180, 80);
   /* Slightly lighter orange on press */
