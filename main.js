@@ -111,6 +111,9 @@ const scrollToTopButton = document.getElementById('scrollTopButton')
 scrollToTopButton.addEventListener('click', scrollToTop)
 
 document.querySelector('#startDate').valueAsDate = new Date();
+if(document.querySelector('#endDate') != null) {
+  document.querySelector('#endDate').valueAsDate = new Date(Date.UTC(new Date().getFullYear() + 1, 0, 1));
+}
 
 
 function validateInput() {
@@ -226,13 +229,15 @@ function manageMedals() {
 }
 
 function resetValues() {
-  for (var i = 0; i < (currentMedals.length); i++) {
-    currentMedals[i].checked = false;
-    targetLabels[i].classList.remove('disabled');
-    targetMedals[i].checked = false;
+  if(currentMedals.length != 0) {
+    for (var i = 0; i < (currentMedals.length); i++) {
+      currentMedals[i].checked = false;
+      targetLabels[i].classList.remove('disabled');
+      targetMedals[i].checked = false;
+    }
+    currentMedals[0].checked = true;
+    targetMedals[0].checked = true;
   }
-  currentMedals[0].checked = true;
-  targetMedals[0].checked = true;
 
   levelField.value = defaultValues.currentLevel;
   xpField.value = defaultValues.currentXP;
@@ -291,7 +296,10 @@ function hoursForXP(neededWeeklyXP, baseXP) {
 * Every Wednesday the XP penalty "resets" — meaning we call xpFromPlaytime(...) 
 * on whatever hours we've accumulated since the previous reset and then start a new chunk.
 */
-function simulateXP(dailyHours, startDate, endDate, baseXP) {
+
+var milestoneDates = new Array(6);
+
+function simulateXP(dailyHours, startDate, endDate, baseXP, currentLevelXP, currentMedal) {
   let totalXP = 0;
 
   // We accumulate weekly hours until a reset happens on Wednesday (dayOfWeek=3),
@@ -302,6 +310,18 @@ function simulateXP(dailyHours, startDate, endDate, baseXP) {
   let day = new Date(startDate);
   const end = new Date(endDate);
 
+  const milestones = [
+    195000,
+    390000,
+    585000,
+    780000,
+    975000,
+    1170000
+].map(xp => xp - currentLevelXP);
+
+milestoneDates = milestoneDates.fill(null);
+let nextMilestoneIndex = currentMedal;
+
   while (day < end) {
     // Add daily hours for this calendar day
     weeklyHours += dailyHours;
@@ -310,12 +330,25 @@ function simulateXP(dailyHours, startDate, endDate, baseXP) {
     let tomorrow = new Date(day);
     tomorrow.setDate(day.getDate() + 1);
 
+    
+
     // If tomorrow is outside the date range OR is a Wednesday, 
     // we finalize the XP for the partial/current chunk:
     if (tomorrow >= end || tomorrow.getDay() === 3) {
       totalXP += xpFromPlaytime(weeklyHours, baseXP);
       // Reset hours for the next chunk
       weeklyHours = 0;
+      while (
+        nextMilestoneIndex < milestones.length &&
+        totalXP >= milestones[nextMilestoneIndex]
+      ) 
+      {
+          milestoneDates[nextMilestoneIndex] = new Date(tomorrow); // Medal achieved by this date
+          if(tomorrow.getDate()==1 && tomorrow.getMonth()==0) {
+            milestoneDates[nextMilestoneIndex] = new Date(day);
+          }
+          nextMilestoneIndex++;
+      }
     }
 
     // Move to the next day
@@ -329,7 +362,7 @@ function simulateXP(dailyHours, startDate, endDate, baseXP) {
 * Uses a simple binary search to find the minimal daily hours required
 * to reach at least `neededXP` over the period [startDate, endDate).
 */
-function findDailyHours(neededXP, startDate, endDate, baseXP) {
+function findDailyHours(neededXP, startDate, endDate, baseXP, currentXP, currentMedal) {
   let low = 0;
   let high = 24; // good luck playing more than 24 hours in a day
   let best = high;
@@ -337,7 +370,7 @@ function findDailyHours(neededXP, startDate, endDate, baseXP) {
   // We'll do ~40 iterations to get a fairly precise solution
   for (let i = 0; i < 40; i++) {
     let mid = (low + high) / 2;
-    let xp = simulateXP(mid, startDate, endDate, baseXP);
+    let xp = simulateXP(mid, startDate, endDate, baseXP, currentXP, currentMedal);
 
     if (xp >= neededXP) {
       // mid daily hours is enough -> try smaller
@@ -398,7 +431,7 @@ function calculate() {
     - currentXP;
 
   // We do a binary search for a single daily hour value
-  const dailyHours = findDailyHours(neededXP, sd, endDateObj, baseXP);
+  const dailyHours = findDailyHours(neededXP, sd, endDateObj, baseXP, 195000*currentMedal+5000*currentLevel+parseInt(currentXP), currentMedal);
 
   // Show the result in your page
   document.querySelector('#resultArea').classList.remove('hidden');
@@ -407,6 +440,40 @@ function calculate() {
   document.querySelector('#neededPlaytime').innerText =
     formatPlaytime(dailyHours);
   document.querySelector('#neededDailyXP').innerText = Math.round(neededXP / ((endDateObj - sd) / (60 * 60 * 24 * 1000)));
+  
+  const medalIDs = ["#whiteDate", "#greenDate", "#blueDate", "#purpleDate", "#pinkDate", "#redDate"];
+  for(let i=0; i<medalIDs.length; i+=1) {
+    if(milestoneDates[i]!=null) {
+      document.querySelector(medalIDs[i]+'Row').classList.remove('hidden');
+      document.querySelector(medalIDs[i]).innerText = `${milestoneDates[i].getDate()}/${milestoneDates[i].getMonth()+1}`
+    }
+    else {
+      document.querySelector(medalIDs[i]+'Row').classList.add('hidden');
+    }
+  }
+  
+}
+
+
+function calculateXP() {
+  var dailyHours = parseFloat(document.getElementById('playtimeInputHours').value) + parseFloat(document.getElementById('playtimeInputMinutes').value/60.0);
+  const startDate = new Date(document.querySelector('#startDate').value);
+  const endDate = new Date(document.querySelector('#endDate').value);
+  if (document.querySelector('#useDeathmatch').checked) {
+    var baseXP = Math.min(document.querySelector('#averageDMScore').value * 6 / 5, 1200);
+  }
+  else {
+    var baseXP = document.querySelector('#averageDMScore').value;
+  }
+  const earnedXP = simulateXP(dailyHours, startDate, endDate, baseXP, 0);
+  const currentLevel = parseInt(document.querySelector('#currentLevel').value);
+  const currentXP = parseInt(document.querySelector('#currentXP').value);
+  document.querySelector('#resultArea').classList.remove('hidden');
+  document.querySelector('#earnedXP').innerText = Math.floor(earnedXP).toString();
+  var earnedLevels = Math.floor((currentXP + earnedXP) / 5000);
+  document.querySelector('#earnedLevels').innerText = earnedLevels;
+  document.querySelector('#earnedMedals').innerText = Math.floor((currentLevel+Math.floor(earnedLevels/39)-1 + earnedLevels) / 40);
+
 }
 
 
@@ -423,7 +490,7 @@ document.addEventListener('input', checkErrors);
 
 
 function showHelp() {
-  var calculator = document.getElementById('calculatorPage');
+  var calculator = document.getElementsByClassName('calculator')[0];
   var help = document.getElementById('helpPage');
   var helpWidget = document.getElementById('help-widget');
 
@@ -442,7 +509,7 @@ function showHelp() {
 }
 
 function showCalculator() {
-  var calculator = document.getElementById('calculatorPage');
+  var calculator = document.getElementsByClassName('calculator')[0];
   var help = document.getElementById('helpPage');
   var helpWidget = document.getElementById('help-widget');
   help.style.display = 'none';
@@ -455,3 +522,12 @@ function showCalculator() {
   helpWidget.attributes.onclick.value = 'showHelp()';
   helpWidget.innerHTML = '<span class="help-question-mark">?</span>';
 }
+
+document.getElementById('bmc-widget').addEventListener('click', function () {
+  const popup = document.getElementById('support-popup');
+  if (popup.classList.contains('show')) {
+    popup.classList.remove('show'); // Fade out
+  } else {
+    popup.classList.add('show'); // Fade in
+  }
+});

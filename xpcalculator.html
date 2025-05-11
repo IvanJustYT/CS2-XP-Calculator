@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <link rel="icon" type="image/x-icon" href="icons/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="/icons/favicon.ico">
   <link rel="stylesheet" href="style.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet">
   <meta charset="UTF-8" />
@@ -13,89 +13,21 @@
 <body>
   <div class="overlay visible">
     <div class="window fade-in">
-      <div id="medalCalculatorPage" class="calculator page active">
-        <a class="switch-calculator" href="xpcalculator.html">Switch to XP Calculator -></a>
+      <div id="XPCalculatorPage" class="calculator page active">
+        <a class="switch-calculator" href="index.html">Switch to Medal Calculator -></a>
         <div class="topless">
           <a href="https://discord.gg/TWkrtHuc8w">
             <div id="discordButtonDiv">
               <img id="discordButton" src="icons/discordlogo.jpeg" alt="Join My Discord">
             </div>
           </a>
-          <h1 data-i18n="title">CS2 Medal Calculator</h1>
+          <h1 data-i18n="title">CS2 XP Calculator</h1>
           <div id="language-switcher">
             <span class="flag-icon flag-icon-gb" id="en" onclick="switchLanguage('en')"></span>
             <span class="flag-icon flag-icon-ru" id="ru" onclick="switchLanguage('ru')"></span>
           </div>
         </div>
-
-        <div class="medal-area">
-          <!-- Current Medal -->
-          <p data-i18n="currentMedal" class="current-medal-text">Current Medal</p>
-          <div class="radio-group">
-            <input type="radio" id="current-0" name="current" value="0" checked />
-            <label for="current-0" class="medal-button medal-0" name="current" data-i18n="noneMedal">None</label>
-            <input type="radio" id="current-1" name="current" value="1" class="medal-1" />
-            <label for="current-1" class="medal-button medal-1" name="current">
-              <img src="https://static.wikia.nocookie.net/cswikia/images/9/9e/Service_medal_2025_lvl1_large.png"
-                alt="Tier 1">
-            </label>
-            <input type="radio" id="current-2" name="current" value="2" />
-            <label for="current-2" class="medal-button medal-2" name="current"><img
-                src="https://static.wikia.nocookie.net/cswikia/images/5/55/Service_medal_2025_lvl2_large.png"
-                alt="Tier 2"></label>
-
-            <input type="radio" id="current-3" name="current" value="3" />
-            <label for="current-3" class="medal-button medal-3" name="current"><img
-                src="https://static.wikia.nocookie.net/cswikia/images/4/43/Service_medal_2025_lvl3_large.png"
-                alt="Tier 3"></label>
-
-            <input type="radio" id="current-4" name="current" value="4" />
-            <label for="current-4" class="medal-button medal-4" name="current"><img
-              src="https://static.wikia.nocookie.net/cswikia/images/4/4e/Service_medal_2025_lvl4_large.png"
-                alt="Tier 4"></label>
-
-            <input type="radio" id="current-5" name="current" value="5" />
-            <label for="current-5" class="medal-button medal-5" name="current"><img
-                src="https://static.wikia.nocookie.net/cswikia/images/b/b4/Service_medal_2025_lvl5_large.png"
-                alt="Tier 5"></label>
-          </div>
-
-          <!-- Target Medal -->
-          <p data-i18n="targetMedal" class="target-medal-text">Target Medal</p>
-          <div class="radio-group">
-            <input type="radio" id="target-1" name="target" value="1" checked />
-            <label for="target-1" class="medal-button medal-1" name="target">
-              <img src="https://static.wikia.nocookie.net/cswikia/images/9/9e/Service_medal_2025_lvl1_large.png"
-                alt="Tier 1">
-            </label>
-            <input type="radio" id="target-2" name="target" value="2" />
-            <label for="target-2" class="medal-button medal-2" name="target"><img
-                src="https://static.wikia.nocookie.net/cswikia/images/5/55/Service_medal_2025_lvl2_large.png"
-                alt="Tier 2"></label>
-
-            <input type="radio" id="target-3" name="target" value="3" />
-            <label for="target-3" class="medal-button medal-3" name="target"><img
-                src="https://static.wikia.nocookie.net/cswikia/images/4/43/Service_medal_2025_lvl3_large.png"
-                alt="Tier 3"></label>
-
-            <input type="radio" id="target-4" name="target" value="4" />
-            <label for="target-4" class="medal-button medal-4" name="target"><img
-              src="https://static.wikia.nocookie.net/cswikia/images/4/4e/Service_medal_2025_lvl4_large.png"
-                alt="Tier 4"></label>
-
-            <input type="radio" id="target-5" name="target" value="5" />
-            <label for="target-5" class="medal-button medal-5" name="target"><img
-                src="https://static.wikia.nocookie.net/cswikia/images/b/b4/Service_medal_2025_lvl5_large.png"
-                alt="Tier 5"></label>
-
-            <input type="radio" id="target-6" name="target" value="6" />
-            <label for="target-6" class="medal-button medal-6" name="target"><img
-                src="https://static.wikia.nocookie.net/cswikia/images/3/31/Service_medal_2025_lvl6_large.png"
-                alt="Tier 6"></label>
-          </div>
-        </div>
         <div class="input-area">
-
           <!-- Starting Level and XP -->
           <div class="section">
             <div class="single-input">
@@ -119,20 +51,39 @@
             </div>
 
             <div class="single-input">
-              <label data-i18n="averageDMScore" for="averageDMScore">Average Deathmatch Score</label>
-              <input type="number" inputmode="numeric" id="averageDMScore" min="1" value="600">
-              <label class="error" id="averageDMScoreERROR" for="averageDMScore"></label>
-              <label class="checkbox-box">
+              <label data-i18n="endDate" for="endDate">End Date (not included)</label>
+              <input type="date" id="endDate" style="margin-bottom: 15px">
+            </div>
+            
+          </div>
+          <div class="section">
+            <div class="single-input">
+                <label data-i18n="averageDMScore" for="averageDMScore">Average Deathmatch Score</label>
+                <input type="number" inputmode="numeric" id="averageDMScore" min="1" value="600">
+                <label class="error" id="averageDMScoreERROR" for="averageDMScore"></label>
+                <label class="checkbox-box">
                 <input id="useDeathmatch" type="checkbox" checked>
                 <span class="checkmark"></span>
                 <span class="checkbox-label" data-i18n="useDeathmatch">Use Deathmatch Score</span>
-              </label>
+                </label>
+            </div>
+            <div class="single-input">
+                
+                    <label data-i18n="startingLevel" for="currentLevel">Daily Playtime</label>
+                <div id="playtimeInput">
+                    <label for=""></label>
+                    <input type="number" inputmode="numeric" id="playtimeInputHours" min="1" max="39" value="1">
+                    <label data-i18n="startingLevel" for="playtimeInputHours">hours</label>
+                    <input type="number" inputmode="numeric" id="playtimeInputMinutes" min="1" max="39" value="1">
+                    <label data-i18n="startingLevel" for="playtimeInputMinutes">min</label>
+                    <label class="error" id="currentLevelERROR" for="playtimeInputMinutes"></label>
+                </div>
             </div>
           </div>
         </div>
         <div class="calculate">
           <button data-i18n="calculateButton" class="calculate-button big-button"
-            onclick="calculate(); scrollToBottom()">CALCULATE</button>
+            onclick="calculateXP(); scrollToBottom()">CALCULATE</button>
           <button data-i18n="resetButton" class="reset-button big-button" onclick="resetValues()">RESET</button>
         </div>
 
@@ -140,49 +91,23 @@
         <div id="resultArea" class="result-area hidden fade-in">
           <!--<h2>Results</h2>-->
           <div class="output-row">
-            <span data-i18n="totalXPNeeded">Total XP Needed:</span>
-            <span><span id="neededXP"></span> XP</span>
+            <span data-i18n="totalXPEarned">Total Earned XP:</span>
+            <span><span id="earnedXP"></span> XP</span>
           </div>
           <!-- <div class="output-row" id="weekXProw">
           <span>Weekly XP:</span>
           <span><span id="neededWeeklyXP"></span> XP</span>
         </div> -->
           <div class="output-row">
-            <span data-i18n="dailyXP">Daily XP:</span>
-            <span><span id="neededDailyXP"></span> XP</span>
+            <span data-i18n="earnedLevels">Levels Earned:</span>
+            <span><span id="earnedLevels"></span></span>
           </div>
           <div class="output-row">
-            <div class="tooltip"><span data-i18n="dailyPlaytime" id="tooltip-hoverable">Daily Playtime: </span>
-              <span data-i18n="tooltip" class="tooltiptext">In-game time (see FAQ)</span>
+            <div class="tooltip"><span data-i18n="earnedMedals" id="tooltip-hoverable">Service Medals Earned: </span>
+              <span data-i18n="tooltip" class="tooltiptext">Starting from your Level</span>
             </div>
-            <span id="neededPlaytime" data-i18n="playtime"></span>
+            <span id="earnedMedals" data-i18n="playtime"></span>
           </div>
-
-          <div class="output-row" id="whiteDateRow">
-            <span data-i18n="whiteDate">White medal by: </span>
-            <span id="whiteDate"></span>
-          </div>
-          <div class="output-row" id="greenDateRow">
-            <span data-i18n="greenDate">Green medal by: </span>
-            <span id="greenDate"></span>
-          </div>
-          <div class="output-row" id="blueDateRow">
-            <span data-i18n="blueDate">Blue medal by: </span>
-            <span id="blueDate"></span>
-          </div>
-          <div class="output-row" id="purpleDateRow">
-            <span data-i18n="purpleDate">Purple medal by: </span>
-            <span id="purpleDate"></span>
-          </div>
-          <div class="output-row" id="pinkDateRow">
-            <span data-i18n="pinkDate">Pink medal by: </span>
-            <span id="pinkDate"></span>
-          </div>
-          <div class="output-row" id="redDateRow">
-            <span data-i18n="redDate">Red medal by: </span>
-            <span id="redDate"></span>
-          </div>
-
         </div>
       </div>
 
@@ -277,7 +202,7 @@
       <i id="heart">❤️</i></div>
       <div class="popup" id="support-popup">
         Want to <span id="support-text">support</span> me?<br>
-        Subscribe to my <a href="https://www.youtube.com/@IvanJustW">YouTube</a>(free :D)<br>
+        Subscribe to my <a href="https://www.youtube.com/@IvanJustW">YouTube (free :D)</a><br>
         OR<br>
         Buy me some good <a href="https://buymeacoffee.com/ivanjust">food?</a> :D
     </div>
