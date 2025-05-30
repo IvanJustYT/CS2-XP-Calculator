@@ -7,21 +7,21 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title data-i18n="title">CS2 XP Calculator</title>
+  <title data-i18n="titleMedal">CS2 XP Calculator</title>
 </head>
 
 <body>
   <div class="overlay visible">
     <div class="window fade-in">
       <div id="medalCalculatorPage" class="calculator page active">
-        <a class="switch-calculator" href="xpcalculator.html">Switch to XP Calculator -></a>
+        <a class="switch-calculator" href="xpcalculator.html" data-i18n="switchToXP">Switch to XP Calculator -></a>
         <div class="topless">
           <a href="https://discord.gg/TWkrtHuc8w">
             <div id="discordButtonDiv">
               <img id="discordButton" src="icons/discordlogo.jpeg" alt="Join My Discord">
             </div>
           </a>
-          <h1 data-i18n="title">CS2 Medal Calculator</h1>
+          <h1 data-i18n="titleMedal">CS2 Medal Calculator</h1>
           <div id="language-switcher">
             <span class="flag-icon flag-icon-gb" id="en" onclick="switchLanguage('en')"></span>
             <span class="flag-icon flag-icon-ru" id="ru" onclick="switchLanguage('ru')"></span>
@@ -128,6 +128,18 @@
                 <span class="checkbox-label" data-i18n="useDeathmatch">Use Deathmatch Score</span>
               </label>
             </div>
+
+            <div class="single-input">
+              <label data-i18n="averageMissionsXP" for="averageMissionsXP">Average Missions Reward</label>
+              <input class="missions-field" type="number" inputmode="numeric" id="averageMissionsXP" min="0" value="450">
+              <label class="error" id="averageMissionsXPERROR" for="averageMissionsXP"></label>
+              <label class="checkbox-box">
+                <input id="useMissions" type="checkbox" checked>
+                <span class="checkmark"></span>
+                <span class="checkbox-label" data-i18n="useMissions">Enable Missions XP</span>
+              </label>
+            </div>
+
           </div>
         </div>
         <div class="calculate">
@@ -142,6 +154,10 @@
           <div class="output-row">
             <span data-i18n="totalXPNeeded">Total XP Needed:</span>
             <span><span id="neededXP"></span> XP</span>
+          </div>
+          <div class="output-row">
+            <span data-i18n="totalReducedXP">Reduced XP Needed:</span>
+            <span><span id="reducedXP"></span> XP</span>
           </div>
           <!-- <div class="output-row" id="weekXProw">
           <span>Weekly XP:</span>

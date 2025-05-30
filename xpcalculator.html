@@ -7,21 +7,21 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title data-i18n="title">CS2 XP Calculator</title>
+  <title data-i18n="titleXP">CS2 XP Calculator</title>
 </head>
 
 <body>
   <div class="overlay visible">
     <div class="window fade-in">
       <div id="XPCalculatorPage" class="calculator page active">
-        <a class="switch-calculator" href="index.html">Switch to Medal Calculator -></a>
+        <a class="switch-calculator" href="index.html" data-i18n="switchToMedal">Switch to Medal Calculator -></a>
         <div class="topless">
           <a href="https://discord.gg/TWkrtHuc8w">
             <div id="discordButtonDiv">
               <img id="discordButton" src="icons/discordlogo.jpeg" alt="Join My Discord">
             </div>
           </a>
-          <h1 data-i18n="title">CS2 XP Calculator</h1>
+          <h1 data-i18n="titleXP">CS2 XP Calculator</h1>
           <div id="language-switcher">
             <span class="flag-icon flag-icon-gb" id="en" onclick="switchLanguage('en')"></span>
             <span class="flag-icon flag-icon-ru" id="ru" onclick="switchLanguage('ru')"></span>
@@ -51,7 +51,7 @@
             </div>
 
             <div class="single-input">
-              <label data-i18n="endDate" for="endDate">End Date (not included)</label>
+              <label data-i18n="endDateXP" for="endDate">End Date (not included)</label>
               <input type="date" id="endDate" style="margin-bottom: 15px">
             </div>
             
@@ -67,15 +67,26 @@
                 <span class="checkbox-label" data-i18n="useDeathmatch">Use Deathmatch Score</span>
                 </label>
             </div>
+
             <div class="single-input">
-                
-                    <label data-i18n="startingLevel" for="currentLevel">Daily Playtime</label>
+              <label data-i18n="averageMissionsXP" for="averageMissionsXP">Average Missions Reward</label>
+              <input class="missions-field" type="number" inputmode="numeric" id="averageMissionsXP" min="0" value="450">
+              <label class="error" id="averageMissionsXPERROR" for="averageMissionsXP"></label>
+              <label class="checkbox-box">
+                <input id="useMissions" type="checkbox" checked>
+                <span class="checkmark"></span>
+                <span class="checkbox-label" data-i18n="useMissions">Enable Missions XP</span>
+              </label>
+            </div>
+
+            <div class="single-input">
+                    <label data-i18n="dailyPlaytimeInput" for="currentLevel">Daily Playtime</label>
                 <div id="playtimeInput">
                     <label for=""></label>
                     <input type="number" inputmode="numeric" id="playtimeInputHours" min="1" max="39" value="1">
-                    <label data-i18n="startingLevel" for="playtimeInputHours">hours</label>
+                    <label data-i18n="hoursInput" for="playtimeInputHours">h</label>
                     <input type="number" inputmode="numeric" id="playtimeInputMinutes" min="1" max="39" value="1">
-                    <label data-i18n="startingLevel" for="playtimeInputMinutes">min</label>
+                    <label data-i18n="minutesInput" for="playtimeInputMinutes">m</label>
                     <label class="error" id="currentLevelERROR" for="playtimeInputMinutes"></label>
                 </div>
             </div>
@@ -99,14 +110,14 @@
           <span><span id="neededWeeklyXP"></span> XP</span>
         </div> -->
           <div class="output-row">
-            <span data-i18n="earnedLevels">Levels Earned:</span>
-            <span><span id="earnedLevels"></span></span>
+            <span data-i18n="levelsEarned">Levels Earned:</span>
+            <span><span id="levelsEarned"></span></span>
           </div>
           <div class="output-row">
-            <div class="tooltip"><span data-i18n="earnedMedals" id="tooltip-hoverable">Service Medals Earned: </span>
+            <div class="tooltip"><span data-i18n="medalsEarned" id="tooltip-hoverable">Service Medals Earned: </span>
               <span data-i18n="tooltip" class="tooltiptext">Starting from your Level</span>
             </div>
-            <span id="earnedMedals" data-i18n="playtime"></span>
+            <span id="medalsEarned"></span>
           </div>
         </div>
       </div>

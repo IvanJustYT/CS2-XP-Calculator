@@ -166,6 +166,8 @@ var scoreField = document.querySelector('#averageDMScore');
 var scoreErrorLabel = document.querySelector('#averageDMScoreERROR');
 var dateField = document.querySelector('#startDate');
 var dmCheckbox = document.querySelector('#useDeathmatch');
+var missionsCheckbox = document.querySelector('#useMissions');
+var missionsXPField = document.querySelector('#averageMissionsXP');
 
 // Attach event listener to input field
 levelField.addEventListener('input', validateInput);
@@ -176,6 +178,8 @@ levelField.addEventListener('focusout', manageInput);
 xpField.addEventListener('focusout', manageInput);
 scoreField.addEventListener('focusout', manageInput);
 dmCheckbox.addEventListener('change', managedmCheckbox);
+missionsCheckbox.addEventListener('change', manageMissionsCheckbox);
+missionsXPField.addEventListener('focusout', manageInput)
 
 function manageInput() {
   if (levelField.value == "") {
@@ -202,6 +206,17 @@ function managedmCheckbox() {
     scoreLabel.attributes["data-i18n"].value = 'baseXP';
     scoreLabel.innerText = translations[localStorage.language]['baseXP'];
     scoreField.value = defaultValues.baseXP;
+  }
+}
+
+function manageMissionsCheckbox() {
+  console.log('ok')
+  if(missionsCheckbox.checked) {
+    missionsXPField.classList.remove('disabled');
+    missionsXPField.readOnly = false;
+  } else {
+    missionsXPField.classList.add('disabled');
+    missionsXPField.readOnly = true;
   }
 }
 
@@ -250,6 +265,7 @@ function resetValues() {
   validateInput();
 }
 
+var reducedXP = 0;
 function xpFromPlaytime(playtimeHours, baseXP) {
   const h1 = 4500 / (baseXP * 4);
   const h2 = h1 + 3000 / (baseXP * 2);
@@ -266,6 +282,7 @@ function xpFromPlaytime(playtimeHours, baseXP) {
     return baseXP * playtimeHours + 4875;
   } else if (playtimeHours > h3) {
     // Very reduced rate
+    reducedXP = (baseXP * 0.175 * playtimeHours + 10066) - 11167;
     return baseXP * 0.175 * playtimeHours + 10066;
   } else {
     return 0;
@@ -299,6 +316,21 @@ function hoursForXP(neededWeeklyXP, baseXP) {
 
 var milestoneDates = new Array(6);
 
+function countWednesdays(startDate, endDate) {
+  let count = 0;
+  const current = new Date(startDate);
+
+  while (current <= endDate) {
+    if (current.getDay() === 3) { // 3 = Wednesday
+      count++;
+    }
+    current.setDate(current.getDate() + 1); // Move to next day
+  }
+  console.log(count);
+  return count;
+}
+
+var totalReducedXP = 0;
 function simulateXP(dailyHours, startDate, endDate, baseXP, currentLevelXP, currentMedal) {
   let totalXP = 0;
 
@@ -321,40 +353,63 @@ function simulateXP(dailyHours, startDate, endDate, baseXP, currentLevelXP, curr
 
 milestoneDates = milestoneDates.fill(null);
 let nextMilestoneIndex = currentMedal;
-
+let daysInWeek = 0;
+let xpEarnedInWeek = 0;
+let xpEarnedPerDay = 0;
+  reducedXP = 0;
+  totalReducedXP = 0;
   while (day < end) {
     // Add daily hours for this calendar day
     weeklyHours += dailyHours;
+    daysInWeek++;
 
     // Figure out what tomorrow is
     let tomorrow = new Date(day);
     tomorrow.setDate(day.getDate() + 1);
 
-    
+    //TODO - FIX XPFROMPLAYTIME (doesn't consider time spent reaching 10066)  - FIND RIGHT DAY IN WEEK WHERE MEDAL IS EARNED  - ADD REDUCED XP COUNTER
 
     // If tomorrow is outside the date range OR is a Wednesday, 
     // we finalize the XP for the partial/current chunk:
     if (tomorrow >= end || tomorrow.getDay() === 3) {
-      totalXP += xpFromPlaytime(weeklyHours, baseXP);
+      xpEarnedInWeek = xpFromPlaytime(weeklyHours, baseXP);
+      xpEarnedPerDay = xpEarnedInWeek / daysInWeek;
       // Reset hours for the next chunk
       weeklyHours = 0;
-      while (
-        nextMilestoneIndex < milestones.length &&
-        totalXP >= milestones[nextMilestoneIndex]
-      ) 
-      {
-          milestoneDates[nextMilestoneIndex] = new Date(tomorrow); // Medal achieved by this date
+      totalReducedXP += reducedXP;
+      for(let i=0; i<daysInWeek; i++) {
+        let medalDay = new Date(tomorrow);
+        medalDay.setDate(medalDay.getDate()-daysInWeek+i);
+        totalXP += xpEarnedPerDay;
+        // check if there's a medal to be earned, and if neededXP + missionXP + tolerance (compensating for binary search) >= milestone
+        if (nextMilestoneIndex < milestones.length && (totalXP+startingXP+0.01) >= milestones[nextMilestoneIndex]) 
+        {
+          milestoneDates[nextMilestoneIndex] = new Date(medalDay); // Medal achieved by this date
           if(tomorrow.getDate()==1 && tomorrow.getMonth()==0) {
-            milestoneDates[nextMilestoneIndex] = new Date(day);
+            milestoneDates[nextMilestoneIndex] = new Date(medalDay);
           }
           nextMilestoneIndex++;
+        }
       }
-    }
+      daysInWeek = 0;
+        // totalXP += xpEarnedInWeek;
+        // if (nextMilestoneIndex < milestones.length && totalXP >= milestones[nextMilestoneIndex]) 
+        // {
+        //   milestoneDates[nextMilestoneIndex] = new Date(tomorrow); // Medal achieved by this date
+        //   if(tomorrow.getDate()==1 && tomorrow.getMonth()==0) {
+        //     milestoneDates[nextMilestoneIndex] = new Date(day);
+        //   }
+        //   nextMilestoneIndex++;
+        // }
+      }
+    
 
     // Move to the next day
     day = tomorrow;
   }
-
+  const diffInMs = endDate - startDate;
+  const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+  totalReducedXP = totalReducedXP / diffInDays;
   return totalXP;
 }
 
@@ -379,6 +434,11 @@ function findDailyHours(neededXP, startDate, endDate, baseXP, currentXP, current
     } else {
       // mid is not enough -> need more hours
       low = mid;
+    }
+
+    // stop binary search when earned XP is within TOLERANCE
+    if (Math.abs(xp-neededXP) < 0.001) {
+      break;
     }
   }
 
@@ -405,7 +465,7 @@ function formatPlaytime(hours) {
 }
 
 
-
+var startingXP = 0;
 function calculate() {
   // Gather inputs as before
   if (document.querySelector('#useDeathmatch').checked) {
@@ -424,18 +484,24 @@ function calculate() {
   // End date: Jan 1 of the following year
   const endDateObj = new Date(sd.getFullYear() + 1, 0, 1);
 
-  // Compute total needed XP as in your code
-  const neededXP = 195000 * (targetMedal - currentMedal)
+  // Compute total needed XP
+  var neededXP = 195000 * (targetMedal - currentMedal)
     - 5000 * currentLevel
     + 5000
     - currentXP;
 
-  // We do a binary search for a single daily hour value
-  const dailyHours = findDailyHours(neededXP, sd, endDateObj, baseXP, 195000*currentMedal+5000*currentLevel+parseInt(currentXP), currentMedal);
+  if(missionsCheckbox.checked) {
+    startingXP = missionsXPField.value*countWednesdays(sd, endDateObj);
+    neededXP = neededXP - startingXP;
+  }
 
-  // Show the result in your page
+  // Binary search for a single daily hour value
+  const dailyHours = findDailyHours(neededXP, sd, endDateObj, baseXP, 195000*currentMedal+5000*(currentLevel-1)+parseInt(currentXP), currentMedal);
+
+  // Show result in page
   document.querySelector('#resultArea').classList.remove('hidden');
   document.querySelector('#neededXP').innerText = neededXP.toString();
+  document.querySelector('#reducedXP').innerText = Math.round(totalReducedXP.toString());
 
   document.querySelector('#neededPlaytime').innerText =
     formatPlaytime(dailyHours);
@@ -470,9 +536,9 @@ function calculateXP() {
   const currentXP = parseInt(document.querySelector('#currentXP').value);
   document.querySelector('#resultArea').classList.remove('hidden');
   document.querySelector('#earnedXP').innerText = Math.floor(earnedXP).toString();
-  var earnedLevels = Math.floor((currentXP + earnedXP) / 5000);
-  document.querySelector('#earnedLevels').innerText = earnedLevels;
-  document.querySelector('#earnedMedals').innerText = Math.floor((currentLevel+Math.floor(earnedLevels/39)-1 + earnedLevels) / 40);
+  var levelsEarned = Math.floor((currentXP + earnedXP) / 5000);
+  document.querySelector('#levelsEarned').innerText = levelsEarned;
+  document.querySelector('#medalsEarned').innerText = Math.floor((currentLevel+Math.floor(levelsEarned/39)-1 + levelsEarned) / 40);
 
 }
 

@@ -207,7 +207,6 @@ ul {
 
 .navbutton img {
   width: 75%;
-
 }
 
 /*.navbutton button {
@@ -244,7 +243,6 @@ ul {
   flex-direction: column;
   width: 100%;
   height: auto;
-
 }
 
 #playtimeInput {
@@ -1029,4 +1027,11 @@ label[class="error"] {
 
 .hidden {
   display: none;
+}
+
+.missions-field.disabled {
+  cursor: not-allowed;
+  background-color: grey;
+  color: rgb(71, 71, 71);
+  border-color: rgb(67, 63, 63);
 }
