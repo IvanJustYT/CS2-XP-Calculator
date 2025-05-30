@@ -407,6 +407,7 @@ let xpEarnedPerDay = 0;
     // Move to the next day
     day = tomorrow;
   }
+  
   const diffInMs = endDate - startDate;
   const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
   totalReducedXP = totalReducedXP / diffInDays;
