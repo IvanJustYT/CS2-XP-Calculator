@@ -410,7 +410,7 @@ let xpEarnedPerDay = 0;
   
   const diffInMs = endDate - startDate;
   const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
-  totalReducedXP = totalReducedXP / diffInDays;
+  totalReducedXP = totalReducedXP * 7 / diffInDays;
   return totalXP;
 }
 
@@ -491,6 +491,7 @@ function calculate() {
     + 5000
     - currentXP;
 
+  startingXP = 0;
   if(missionsCheckbox.checked) {
     startingXP = missionsXPField.value*countWednesdays(sd, endDateObj);
     neededXP = neededXP - startingXP;
@@ -502,7 +503,15 @@ function calculate() {
   // Show result in page
   document.querySelector('#resultArea').classList.remove('hidden');
   document.querySelector('#neededXP').innerText = neededXP.toString();
-  document.querySelector('#reducedXP').innerText = Math.round(totalReducedXP.toString());
+  if(Math.round(totalReducedXP.toString())!=0){
+    document.querySelector('#reducedXProw').classList.remove('hidden');
+    document.querySelector('#dailyXProw').classList.add('hidden');
+    document.querySelector('#reducedXP').innerText = Math.round(totalReducedXP.toString());
+  }
+  else {
+    document.querySelector('#reducedXProw').classList.add('hidden');
+    document.querySelector('#dailyXProw').classList.remove('hidden');
+  }
 
   document.querySelector('#neededPlaytime').innerText =
     formatPlaytime(dailyHours);
